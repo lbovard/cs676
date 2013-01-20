@@ -1,0 +1,21 @@
+%%Run binomial lattice simulation for various dt
+%for both call and put
+
+%initial parameters
+K=100;
+S0=100;
+r=0.02;
+sigma=0.2;
+tfinal=1;
+timesteps=0.01./2.^(0:10);
+
+
+
+call_data=zeros(2,length(dt));
+call_data(1,:)=dt;
+
+i=1;
+for dt=timesteps
+    
+    call_data(2,i)=blpricing(K,S0,r
+    i=i+1;

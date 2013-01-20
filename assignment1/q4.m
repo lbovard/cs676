@@ -1,42 +1,50 @@
-%%Binomial Lattice model for pricing
-close all;
+%%Run binomial lattice simulation for various dt
+%for both call and put
 clear all;
-%time step
-dt=1/3;
-%final time (years)
-tfinal=1;
-%number of lattices
-N=tfinal/dt;
-%strike price
+close all;
+%initial parameters
 K=100;
-%initial price
 S0=100;
-%volatility
+r=0.02;
 sigma=0.2;
-%interest
-r=0.01;
+tfinal=1;
+%number of times to sample 
+N=6;
+timesteps=0.01./2.^(0:(N-1));
+%allocate arrays
+call_data=zeros(4,length(timesteps));
+call_data(1,:)=timesteps;
+put_data=call_data;
 
-%Cox parameters
-u=exp(sigma*sqrt(dt));
-d=1/u;
-
-%modified probability
-qstar=(exp(r*dt)-d)/(u-d);
-
-%allocate V
-V=zeros(N+1,N+1);
-S=zeros(N+1,N+1);
-%final value of asset
-S(:,N+1)=S0*exp((2*(0:1:N)-N)*sigma*sqrt(dt));
-%payoff 
-V(:,N+1)=max(S(:,N+1)-ones(length(S(:,N+1)),1)*K,0)';
-
-%do the looping backwards
-for n=[N:-1:1]
-	for jj=[0:1:n-1] 
-		j=jj+1;
-		S(j,n)=exp(-r*dt)*(qstar*S(j+1,n+1)+(1-qstar)*S(j,n+1));		
-%		V(j,n)=exp(-r*dt)*(qstar*V(j+1,n+1)+(1-qstar)*V(j,n+1));		
-	end
+%%Part A
+%run simulation
+i=1;
+for dt=timesteps 
+    call_data(2,i)=blpricing(K,S0,r,tfinal,sigma,dt,0,1);
+    put_data(2,i)=blpricing(K,S0,r,tfinal,sigma,dt,1,1);
+    i=i+1;
 end
-V(1,1)
+
+%compute change and ratio
+for i=2:N
+    call_data(3,i)=call_data(2,i)-call_data(2,i-1);
+    put_data(3,i)=put_data(2,i)-put_data(2,i-1);
+end
+for i=3:N
+    call_data(4,i)=(call_data(2,i-1)-call_data(2,i-2))/(call_data(2,i)-call_data(2,i-1));
+    put_data(4,i)=(put_data(2,i-1)-put_data(2,i-2))/(put_data(2,i)-put_data(2,i-1));
+end
+
+%%Part B
+strikes=60:10:100;
+dt=0.0025;
+gamma=2;
+i=1;
+for K=strikes
+    power_put(1,i)=blpricing(K,S0,r,tfinal,sigma,dt,1,gamma);
+    power_put(2,i)=blpricing(K,S0,r,tfinal,sigma,dt,1,1);
+    i=i+1;
+end
+plot(strikes,power_put(1,:),'*-')
+hold on
+plot(strikes,power_put(2,:),'or-')
