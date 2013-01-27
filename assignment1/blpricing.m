@@ -36,7 +36,7 @@ end
 %there is some optimisation in this loop since a lot of entries are 0 
 %so calculations could be reduced. I played around with this and got huge
 %performance increases but it was, for some bizarre reason, ill-condition
-%wrt the initial interest rate. e.g. I changed r from 0.02 to 0.03 and the
+%wrt the initial interest rate. e.g. I changed r from 0.01 to 0.02 and the
 %super optimised code went from ~ 8s to ~20s!
 for n=[N:-1:1]
 		V(1:n)=pup*V(2:(n+1))+pdown*V(1:n);

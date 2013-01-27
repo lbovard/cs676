@@ -5,7 +5,7 @@ close all;
 %initial parameters
 K=100;
 S0=100;
-r=0.02;
+r=0.01;
 sigma=0.2;
 tfinal=1;
 %number of times to sample 
@@ -38,7 +38,7 @@ end
 %%Part B
 strikes=60:10:100;
 dt=0.0025;
-gamma=2;
+gamma=2 ;
 i=1;
 for K=strikes
     power_put(1,i)=blpricing(K,S0,r,tfinal,sigma,dt,1,gamma);
