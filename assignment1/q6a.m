@@ -29,7 +29,7 @@ Vout=S.*(normcdf(d1)-normcdf(d3)-(Su./S).^(1+2*r/sigma^2).*(normcdf(d6)-normcdf(
 
 plot(S,Vout,'*-')
 title('European up-and-out barrier call option')
-xlabel('S')
+xlabel('Initial Price')
 ylabel('V_{out}(S,0)')
 
 inits=S;
@@ -42,4 +42,5 @@ for S0=inits
     i=i+1;
 end
 hold on
-plot(inits,power_put(1,:),'or-')
+%plot(inits,power_put(1,:),'or-')
+%axis([80 110 0 2])

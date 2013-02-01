@@ -3,11 +3,7 @@
 clear all;
 close all;
 %initial parameters
-K=100;
-S0=100;
-r=0.01;
-sigma=0.2;
-tfinal=1;
+K=100;S0=100;r=0.01;sigma=0.2;tfinal=1;
 %number of times to sample 
 N=6;
 timesteps=0.01./2.^(0:(N-1));
@@ -46,5 +42,9 @@ for K=strikes
     i=i+1;
 end
 plot(strikes,power_put(1,:),'*-')
+xlabel('Strike Price')
+ylabel('Initial Put Price')
 hold on
 plot(strikes,power_put(2,:),'or-')
+title('European Power Put')
+legend('\gamma=2','\gamma=1','Location','NorthWest')
