@@ -10,12 +10,231 @@
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \theoremstyle{plain}
+\newcommand{\dt}{\Delta t}
 \pagestyle{fancy}
-\fancyhead[L]{}
-\fancyhead[c]{}
-\fancyhead[R]{}
+\fancyhead[L]{Luke Bovard - 20288133}
+\fancyhead[c]{CS 676}
+\fancyhead[R]{\today}
 \usepackage{babel}
 \begin{document}
+\begin{enumerate}
+\item \textbf{Solution}: We have that the value of an option on a binomial lattice is given by
+\begin{align*}
+C_{t} = e^{-r\Delta t}E^{Q}[C_{t+1}], \qquad \text{w.r.t risk neutral probability } q^{*}=\frac{e^{r\Delta t}-d}{u-d}.
+\end{align*}
+Here we have that $S_{0}=100, d<1<u, r=0$. Consider the first call option with the strike price $K=94$ with value $C_{t}=2$. At expiry time the payoff is
+\begin{align*}
+\text{payoff}=\max(94-S,0),
+\end{align*}
+and here we have two possible values for $S_{t+1}, S_{u}=100u, S_{d}=100d$. However since $u>1$ we must have that $S_{u}>100$ so the payoff for $C_{t+1}^{u}=0$ since $94-100u < 0$. Hence the payoff for down is $C_{t+1}^{d}=94-100d$. Recalling that $r=0$ the above expection value formula gives
+\begin{align}
+C_{t} &= q^{*}C_{t+1}^{u} + (1-q^{*})C_{t+1}^{d},\nonumber\\
+2 &= (1-q^{*})(94-100d).\label{po1}
+\end{align}
+For the case of the strike price being $K=92$ and the put value being $C_{t}=1$ we would obtain an identical formula because, again $92-100u<0$. Thus we will obtain
+\begin{align}
+1 &= (1-q^{*})(92-100d).\label{po2}
+\end{align}
+Dividing the equations (\ref{po1},\ref{po2}) immediately yields
+\begin{align}
+2 = \frac{94-100d}{92-100d} \Rightarrow 184 - 200d = 94-100d \Rightarrow \boxed{d=0.9}
+\end{align}
+for the down probability.  Choosing (\ref{po1}) we immediately have that
+\begin{align}
+2 = \left(1-\frac{1-0.9}{u-0.9}\right)(94-90) \Rightarrow \frac{1}{2}=1-\frac{0.1}{u-0.9}\Rightarrow \boxed{u=1.1}
+\end{align}
+for the up probability. Now consider a call option with strike price $K=100$. The payoff here is now $C_{t+1}^{u}=\max(S_{u}-K,0)=10$. In this case $C_{t+1}^{d}=0$ because $S_{d}-K=90-100<0$. Thus the expectation is now
+\begin{align}
+C_{t} = q^{*}C^{u}_{t+1} = \left(\frac{1-0.9}{1.1-0.9}\right)10 \Rightarrow \boxed{C_{t}=5}
+\end{align}
+thus the fair price is for the call option is $\$5$.
+
+\item \textbf{Solution}: From the class notes, consider the following system of linear equations
+\begin{align}
+\left(
+\begin{array}{cc}
+1 & 1 \\
+uS_{t} & dS_{t}
+\end{array}\right)\left(\begin{array}{c}
+\psi^{u}\\
+\psi^{d}
+\end{array}\right)=
+\left(\begin{array}{c}
+e^{-r\Delta t} \\
+S_{t}
+\end{array}\right).\label{leq}
+\end{align}
+It is easy to invert the matrix and multiply to obtain
+\begin{align*}
+\left(\begin{array}{c}
+\psi^{u}\\
+\psi^{d}
+\end{array}\right)=\frac{1}{(d-u)S_{t}}\left(\begin{array}{cc}
+dS_{t} & -1 \\
+-uS_{t} & 1
+\end{array}\right)
+\left(\begin{array}{c}
+e^{-r\Delta t} \\
+S_{t}
+\end{array}\right)&=\frac{1}{(d-u)S_{t}}\left(\begin{array}{c}
+dS_{t}e^{-r\Delta t}-S_{t}\\
+-uS_{t}e^{-r\Delta t} + S_{t}
+\end{array}\right)\\
+&=\frac{1}{d-u}\left(\begin{array}{c}
+de^{-r\Delta t}-1\\
+-ue^{-r\Delta t} +1
+\end{array}\right),
+\end{align*}
+which written out we obtain
+\begin{align}
+\psi^{u} = \frac{1}{d-u}(de^{-r\Delta t} - 1), \psi^{d}=\frac{1}{d-u}(-ue^{-r\Delta t} + 1).
+\end{align}
+Consider the $\psi^{u}$ equation. We have that
+\begin{align*}
+\psi^{u} = \frac{1}{d-u}(de^{-r\Delta t} - 1) &= \frac{e^{-r\Delta t}}{d-u}(d - e^{r\Delta t}),\\
+&= \frac{e^{-r\Delta t}}{u-d}(e^{r\Delta t}-d),\\
+&= e^{-r\Delta t}q^{*}
+\end{align*}
+where we have defined 
+\begin{align}
+q^{*}=\frac{e^{r\Delta t}-d}{u-d}.
+\end{align}
+Now consider $\psi^{d}$ and we have that
+\begin{align*}
+\psi^{d}&=\frac{1}{d-u}(-ue^{-r\Delta t} + 1),\\
+&=\frac{e^{-r\Delta t}}{d-u}(-u+e^{r\Delta t}),\\
+&=\frac{e^{-r\Delta t}}{d-u}(e^{r\Delta t}-u+d-d),\\
+&=\frac{e^{-r\Delta t}}{d-u}(e^{r\Delta t}-d+(d-u)),\\
+&= e^{-r\Delta t}(-q^{*}+1).
+\end{align*}
+Thus the second equation of (\ref{leq}) is 
+\begin{align*}
+S_{t} &= uS_{t}e^{-r\Delta t}q^{*} + dS_{t}e^{-r\Delta t}(1-q^{*}),\\
+&= e^{-r\Delta t}(S_{t+1}^{u}q^{*} + S_{t+1}^{d}(1-q^{*})),
+\end{align*}
+which immediately leads to the definition
+\begin{align}
+\boxed{S_{t}=e^{-r\Delta t}E^{Q}(S_{t+1})} 
+\end{align}
+as required. However if we assume that $u>e^{r\Delta t}>d$ then we must have that $0<q^{*}<1.$ This is easy to verify. Consider the previous inequality. Subtract $d$ from the equation to obtain $u-d > e^{r\Delta t} -d > 0$ and now divide by $u-d$ and we have that $1 > (e^{r\Delta t}-d)/(u-d)> 0$ as required. 
+
+
+\item \textbf{Solution}: On a binomial lattice we are given that
+\begin{align*}
+u=e^{\sigma\sqrt{\dt}}, d=e^{-\sigma\sqrt{\dt}},\qquad \sigma > r > 0,
+\end{align*}
+then the no arbitrage condition $u>e^{r\Delta t}>d$ is satisfied. Plug in the above values to obtain the following inequality
+\begin{align*}
+e^{\sigma\sqrt{\dt}}> e^{r\Delta t}>e^{-\sigma\sqrt{\dt}},
+\end{align*}
+and now take logarithms. This is valid because the exponential is always positive so there is no worry about signs flipping. We obtain
+\begin{align*}
+\sigma\sqrt{\dt} > &r\dt > -\sigma\sqrt{\dt},\\
+\sigma > &r\sqrt{\dt} > -\sigma,
+\end{align*}
+which is valid as long as $\sqrt{\dt} < \sigma /r$. Since we have that the no-arbitrage condition holds, we immediately have that $0<q^{*}<1$ by virtue of the previous problem.
+
+We now want to prove that if $W^{N}_{j}>V^{N}_{j} \forall j=0,\ldots,N$ then $W^{0}_{0}>V^{0}_{0}$. We proceed by induction and the result will follow immediately if we can prove that $W^{N-1}_{j}>V^{N-1}_{j}, \forall j=0,\ldots, N-1$. Consider arbitrary $0\le j\le N-1$. We have that
+\begin{align}
+W^{N-1}_{j}&=e^{-r\dt}E^{Q}(W^{N}_{j}) = e^{-r\dt}(q^{*}W^{N}_{j+1}+(1-q^{*})W^{N}_{j})=aW^{N}_{j+1}+bW^{N}_{j},\nonumber\\
+V^{N-1}_{j}&=e^{-r\dt}E^{Q}(V^{N}_{j}) = e^{-r\dt}(q^{*}V^{N}_{j+1}+(1-q^{*})V^{N}_{j})=aV^{N}_{j+1}+bV^{N}_{j},\label{exp}
+\end{align}
+where we have defined $a=e^{-r\dt}q^{*},b=e^{-r\dt}(1-q^{*})$ for convenience. Note that $a,b>0$ which follows from the previous part. Now the initial hypothesis states that
+\begin{align*}
+W^{N}_{j}>V^{N}_{j}\qquad \forall j=0,\ldots,N.
+\end{align*}
+Thus picking $j,j+1$ we have that
+\begin{align*}
+aW^{N}_{j+1}>aV^{N}_{j+1} \text{ and } bW^{N}_{j}>bV^{N}_{j},
+\end{align*}
+and adding them yields
+\begin{align*}
+aW^{N}_{j+1}+bW^{N}_{j} > aV^{N}_{j+1} + bV^{N}_{j}\Rightarrow W^{N-1}_{j} > V^{N-1}_{j},
+\end{align*}
+where we have used (\ref{exp}). Since $j$ was arbitrary this holds for all $j=0,\ldots,N-1$. By induction on the upper index we can repeat this process until $W^{0}_{0}>V^{0}_{0}$ as required.
+
+\item 
+\begin{enumerate}
+\item \textbf{Solution}: The binomial lattice code is implemented in \texttt{blpricing.m} and comments are therein. The code uses only $O(N)$ storage and actually could be improved to $O(N/2)$ but I couldn't get it to work properly. The initial parameters are $\sigma=0.2,r=0.01,T=1,S_{0}=100,K=100$ with variable timestepping. Table 1 shows the results of the binomial lattice simulation. We can see that the call option value from the binomial tree has value $V^{\text{tree}}_{0}=8.43269$ while the \texttt{blsprice} MATLAB command gives $V^{\text{exact}}_{0}=8.43331$ which tells us the absolute error of the binomial lattice model, with the smallest tested timestep, is $0.004\%$. For the put option value we have that $V^{\text{tree}}_{0}=7.43768$ while the exact is $V^{\text{exact}}_{0}=7.43830$ which gives an absolute error of $0.008\%$. 
+
+The results of the ratio of Table 1 agree exactly with linear theory. Consider $V_{0}^{\text{tree}}=V_{0}^{\text{exact}}+\alpha \dt + O(\dt^{3/2})$. Now consider the following ratio
+\begin{align*}
+\lim_{\dt\rightarrow 0} \frac{V_{0}^{\text{tree}}(\dt/2) -  V_{0}^{\text{tree}}(\dt)}{V_{0}^{\text{tree}}(\dt/4) -  V_{0}^{\text{tree}}(\dt/2)}&= \frac{V_{0}^{\text{exact}}+\alpha \dt/2 - V_{0}^{\text{exact}}-\alpha \dt}{V_{0}^{\text{exact}}+\alpha \dt/4-V_{0}^{\text{exact}}-\alpha \dt/2},\\
+&= \frac{-\alpha \dt /2}{-\alpha \dt/4},\\
+&= 2,
+\end{align*}
+where higher order times are neglected. Thus for a linear theory the above ratio should approach $2$. As can be seen in the last column of table 1, this is exactly what is obtained. Thus confirming linear theory.
+\begin{table}[t]
+
+\centering
+\begin{tabular}{|c|c|c|c|}
+\multicolumn{3}{c}{Call Option}\\
+\hline
+	$\dt$ & Value & Change & Ratio \\
+\hline
+   0.0100000 &  8.41350  &          &                  \\
+   0.0050000 &  8.42340  & 0.009900 &                  \\
+   0.0025000 &  8.42836  & 0.004955 &  1.9980\\
+   0.0012500 &  8.43083  & 0.002478 &  1.9990\\
+   0.0006250 &  8.43207  & 0.001239 &  1.9995\\
+   0.0003125 &  8.43269  & 0.000619 &  1.9997\\
+\hline
+\end{tabular}
+\begin{tabular}{|c|c|c|c|}
+\multicolumn{3}{c}{Put Option}\\
+\hline
+	$\dt$ & Value & Change & Ratio \\
+\hline
+   0.0100000 &   7.41848 &           &                  \\
+   0.0050000 &   7.42838 &  0.009900 &                  \\
+   0.0025000 &   7.43334 &  0.004955 &  1.9980\\
+   0.0012500 &   7.43582 &  0.002478 &  1.9990\\
+   0.0006250 &   7.43706 &  0.001239 &  1.9995\\
+   0.0003125 &   7.43768 &  0.000619 &  1.9997\\
+\hline
+\end{tabular}
+\caption{Initial Option Value using Binomial Lattice for various time-steps. The last two columns show convergence.}
+\end{table}
+\item \textbf{Solution}: Now consider European power put options with the payoff $\max(K-S,0)^{\gamma}$. We consider the case where $\gamma=2$. Figure (\ref{pp}) shows the numerical simulation of a European put option with same variables as in the previous part, but with variable strike price. What can we determine from this figure? We see that if the strike price is close to the initial price, the value of a power put is very large. Why is this? Recall what it means for a put option; it means we can sell the option at expiry for price $K$. If the strike price is $100$ and the initial stock price is $100$ then we would expect that the price to fluctuate around $100$. Now unlike the regular put option, the payoff is not just $K-S$ but $(K-S)^{2}$. Thus if the final price was $90$ the value of the option is not $10$ but $100$. A very significant difference because this situation is very likely and the profit is very high. Considering that this stock has volatility of $20\%$ a change of $10$ is likely so  this stock is exposed to a lot of risk and thus the option value must be high to compenstate for this high profit. As we decrease the strike price, the put option value decreases because it is becoming less risky. For example, consider a strike price of $K=80$. Here the only way to make a profit is for the stock price to go below $80$ which is more unlikely and hence there is less risk and thus the value of the option is less. At $K=60$ we are in a situation where the price has to drop significantly to make a profit. Given the parameters it is very unlikely so there is very little risk in this option and hence can be priced very cheapily.
+
+In comparison with the regular put option $\gamma=1$ we see a big difference due to the quadratic nature of the payoff. For the regular put option at $K=100$ if the price changes by $10$ the payoff is only $10$ instead of $100$ so we expect the option to be worth around $\sim 10$ to compenstate for this risk. The figure shows this to be true with the value of the option being about $10$. 
+\begin{figure}
+
+\begin{center}
+\includegraphics[scale=0.8]{q4b.png}
+\end{center}
+\caption{European Power Put Options}\label{pp}
+\end{figure}
+\end{enumerate}
+
+\item \textbf{Solution}: Figure (\ref{bm1})  shows the two types of Brownian motion; the top figure with Brownian motion described as
+\begin{align*}
+Z_{t_{i+1}}= Z_{t_{i}} + \sqrt{\dt}\text{ randn},
+\end{align*}
+while the bottom has
+\begin{align*}
+Z_{t_{i+1}}^2= Z_{t_{i}}^2 +\dt\text{ randn}^2.
+\end{align*}
+As we can see, the top parts of Figure (\ref{bm1}) has a nice distribution of the final value of the Brownian motion. Plus the trajectory conforms to the notion of what a stock price might look like. When we increase the number of steps we see, for a completely different set of random numbers, a completely different distribution that again has the random character to it. 
+
+Now compare this with the bottom of the figure. As can be seen for $N=100$ the final value seems to be focused on $1$. Going to $N=1000$, and with completely different random numbers, we see that the final value is $1$. We can also see the lines collapsing into a small width. It is reasonable to guess that by increasing $N$ we would expect to see the lines converging at $1$. This behaviour, especially $N=1000$ looks like the function $Z_{t}=\sqrt{T}$ which is entirely deterministic. This is not a good model for the stock market because the stock market is far from deterministic.
+
+Thus it is important for the Brownian motion to behave like
+\begin{align*}
+Z_{t_{i+1}}= Z_{t_{i}} + \sqrt{\dt}\text{ randn}
+\end{align*}
+to ensure randomness. We also can see why we need $\sqrt{\dt}$ as opposed to just $\dt$.
+
+\begin{figure}
+
+\begin{center}
+\includegraphics[scale=0.8]{q5a.png}
+\includegraphics[scale=0.8]{q5b.png}
+\end{center}
+\caption{Numerical Simulation of Brownian Motion (top) and modified (bottom)}\label{bm1}
+\end{figure}
+\end{enumerate}
+
 
 \end{document} 
 
