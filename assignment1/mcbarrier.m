@@ -3,14 +3,10 @@ function Vout=mcbarrier(S0,Su,K,T,dt,r,sigma,M)
 % S0 ~ initial price; Su ~ upper barrier; K ~ strike price; T ~ final time
 % dt ~ time-step; r ~ interest rate; sigma ~ volatility
 % M ~ number of simulations
-
-%initial data
-N=round(T/dt);
 %number of simulations
-
+N=round(T/dt);
 %set-up stuff
 payoff=zeros(1,M);
-
 %Monte Carlo simulation
 %let's parallelise this because MATLAB makes it so easy!
 %plus it makes code zoom zoom
@@ -33,5 +29,6 @@ parfor k=1:M
         payoff(k)=max(S(end)-K,0);
     end
 end 
+%return correct average
 Vout=exp(-r*T)*sum(payoff)/M;
 end

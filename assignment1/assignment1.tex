@@ -26,7 +26,7 @@ Here we have that $S_{0}=100, d<1<u, r=0$. Consider the first call option with t
 \begin{align*}
 \text{payoff}=\max(94-S,0),
 \end{align*}
-and here we have two possible values for $S_{t+1}, S_{u}=100u, S_{d}=100d$. However since $u>1$ we must have that $S_{u}>100$ so the payoff for $C_{t+1}^{u}=0$ since $94-100u < 0$. Hence the payoff for down is $C_{t+1}^{d}=94-100d$. Recalling that $r=0$ the above expection value formula gives
+and here we have two possible values for $S_{t+1}, S_{u}=100u, S_{d}=100d$. However since $u>1$ we must have that $S_{u}>100$ so the payoff for $C_{t+1}^{u}=0$ since $94-100u < 0$. Hence the payoff for down is $C_{t+1}^{d}=94-100d$. Recalling that $r=0$ the above expectation value formula gives
 \begin{align}
 C_{t} &= q^{*}C_{t+1}^{u} + (1-q^{*})C_{t+1}^{d},\nonumber\\
 2 &= (1-q^{*})(94-100d).\label{po1}
@@ -155,7 +155,7 @@ where we have used (\ref{exp}). Since $j$ was arbitrary this holds for all $j=0,
 
 \item Code for this question is implemented in the attached files \texttt{blspricing.m} and \texttt{q4.m} and comments are therein.
 \begin{enumerate}
-\item \textbf{Solution}: The code uses only $O(N)$ storage and actually could be improved to $O(N/2)$ but I couldn't get it to work properly. The initial parameters are $\sigma=0.2,r=0.01,T=1,S_{0}=100,K=100$ with variable timestepping. Table 1 shows the results of the binomial lattice simulation. We can see that the call option value from the binomial tree has value $V^{\text{tree}}_{0}=8.43269$ while the \texttt{blsprice} MATLAB command gives $V^{\text{exact}}_{0}=8.43331$ which tells us the absolute error of the binomial lattice model, with the smallest tested timestep, is $0.004\%$. For the put option value we have that $V^{\text{tree}}_{0}=7.43768$ while the exact is $V^{\text{exact}}_{0}=7.43830$ which gives an absolute error of $0.008\%$. 
+\item \textbf{Solution}: The code uses only $O(N)$ storage and actually could be improved to $O(N/2)$ but I couldn't get it to work properly. The initial parameters are $\sigma=0.2,r=0.01,T=1,S_{0}=100,K=100$ with variable time stepping. Table 1 shows the results of the binomial lattice simulation. We can see that the call option value from the binomial tree has value $V^{\text{tree}}_{0}=8.43269$ while the \texttt{blsprice} MATLAB command gives $V^{\text{exact}}_{0}=8.43331$ which tells us the absolute error of the binomial lattice model, with the smallest tested time step, is $0.004\%$. For the put option value we have that $V^{\text{tree}}_{0}=7.43768$ while the exact is $V^{\text{exact}}_{0}=7.43830$ which gives an absolute error of $0.008\%$. 
 
 The results of the ratio of Table 1 agree exactly with linear theory. Consider $V_{0}^{\text{tree}}=V_{0}^{\text{exact}}+\alpha \dt + O(\dt^{3/2})$. Now consider the following ratio
 \begin{align*}
@@ -195,9 +195,9 @@ where higher order times are neglected. Thus for a linear theory the above ratio
 \end{tabular}
 \caption{Initial Option Value using Binomial Lattice for various time-steps. The last two columns show convergence.}
 \end{table}
-\item \textbf{Solution}: Now consider European power put options with the payoff $\max(K-S,0)^{\gamma}$. We consider the case where $\gamma=2$. Figure (\ref{pp}) shows the numerical simulation of a European put option with same variables as in the previous part, but with variable strike price. What can we determine from this figure? We see that if the strike price is close to the initial price, the value of a power put is very large. Why is this? Recall what it means for a put option; it means we can sell the option at expiry for price $K$. If the strike price is $100$ and the initial stock price is $100$ then we would expect that the price to fluctuate around $100$. Now unlike the regular put option, the payoff is not just $K-S$ but $(K-S)^{2}$. Thus if the final price was $90$ the value of the option is not $10$ but $100$. A very significant difference because this situation is very likely and the profit is very high. Considering that this stock has volatility of $20\%$ a change of $10$ is likely so  this stock is exposed to a lot of risk and thus the option value must be high to compenstate for this high profit. As we decrease the strike price, the put option value decreases because it is becoming less risky. For example, consider a strike price of $K=80$. Here the only way to make a profit is for the stock price to go below $80$ which is more unlikely and hence there is less risk and thus the value of the option is less. At $K=60$ we are in a situation where the price has to drop significantly to make a profit. Given the parameters it is very unlikely so there is very little risk in this option and hence can be priced very cheapily.
+\item \textbf{Solution}: Now consider European power put options with the payoff $\max(K-S,0)^{\gamma}$. We consider the case where $\gamma=2$. Figure (\ref{pp}) shows the numerical simulation of a European put option with same variables as in the previous part, but with variable strike price. What can we determine from this figure? We see that if the strike price is close to the initial price, the value of a power put is very large. Why is this? Recall what it means for a put option; it means we can sell the option at expiry for price $K$. If the strike price is $100$ and the initial stock price is $100$ then we would expect that the price to fluctuate around $100$. Now unlike the regular put option, the payoff is not just $K-S$ but $(K-S)^{2}$. Thus if the final price was $90$ the value of the option is not $10$ but $100$. A very significant difference because this situation is very likely and the profit is very high. Considering that this stock has volatility of $20\%$ a change of $10$ is likely so  this stock is exposed to a lot of risk and thus the option value must be high to compensate for this high profit. As we decrease the strike price, the put option value decreases because it is becoming less risky. For example, consider a strike price of $K=80$. Here the only way to make a profit is for the stock price to go below $80$ which is more unlikely and hence there is less risk and thus the value of the option is less. At $K=60$ we are in a situation where the price has to drop significantly to make a profit. Given the parameters it is very unlikely so there is very little risk in this option and hence can be priced very cheaply.
 
-In comparison with the regular put option $\gamma=1$ we see a big difference due to the quadratic nature of the payoff. For the regular put option at $K=100$ if the price changes by $10$ the payoff is only $10$ instead of $100$ so we expect the option to be worth around $\sim 10$ to compenstate for this risk. The figure shows this to be true with the value of the option being about $10$. 
+In comparison with the regular put option $\gamma=1$ we see a big difference due to the quadratic nature of the payoff. For the regular put option at $K=100$ if the price changes by $10$ the payoff is only $10$ instead of $100$ so we expect the option to be worth around $\sim 10$ to compensate for this risk. The figure shows this to be true with the value of the option being about $10$. 
 \begin{figure}
 
 \begin{center}
@@ -237,7 +237,7 @@ to ensure randomness. We also can see why we need $\sqrt{\dt}$ as opposed to jus
 \item Code for this question is implemented in the attached files \texttt{q6a.m}, \texttt{mcbarrier.m}, \texttt{q6b.m}, and \texttt{q6b\_analysis.m} and comments are therein.
 
  \begin{enumerate}
-\item \textbf{Solution}: 
+\item \textbf{Solution}: Figure (\ref{q6a}) contains a plot of the exact solution to the up-and-out barrier option. This curve makes some logical sense. Consider the initial value of the option if the initial price is $110$. Then by definition the barrier is hit so the option is worthless. Likewise, we have an initial price close to the barrier, the value of the option is worth very little since it is likely that the asset will cross the barrier. The costliest option value is around the strike price of the option. This makes sense since if the initial price is the same as the strike price, and given that this is a call option, there is a potential profit to be made since the assets' price will fluctuate around $95$. Thus there is some risk involved and hence a higher option value. As we decrease the initial price the value of the option decreases because it becomes more difficult to make a profit since the lower the initial price, the higher the asset has to climb to become profitable. 
 \begin{figure}
 \begin{center}
 \includegraphics[scale=0.8]{q6a.png}
@@ -245,7 +245,7 @@ to ensure randomness. We also can see why we need $\sqrt{\dt}$ as opposed to jus
 \caption{Exact Solution of an European up-and-out call option}\label{q6a}
 \end{figure}
 
-\item \textbf{Solution}: In the case of barrier options, even though there is no time discredisation error in the computing of the underlying asset, there is still an associated time-stepping error. This is because a barrier option is evaluated at each time-step. An analogy would be if we have a single time-step. The probability of the asset going above the upper barrier price is very unlikely if the initial price is $S_{0}=100$ and $S_{u}=110$. However adding more time-steps gives the underlying asset more of a chance to go above $S_{u}$. 
+\item \textbf{Solution}: In the case of barrier options, even though there is no time discretisation error in the computing of the underlying asset, there is still an associated time-stepping error. This is because a barrier option is evaluated at each time-step. An analogy would be if we have a single time-step. The probability of the asset going above the upper barrier price is very unlikely if the initial price is $S_{0}=100$ and $S_{u}=110$. However adding more time-steps gives the underlying asset more of a chance to go above $S_{u}$. 
 \begin{figure}
 \begin{center}
 \includegraphics[scale=0.8]{q6b.png}
@@ -253,15 +253,16 @@ to ensure randomness. We also can see why we need $\sqrt{\dt}$ as opposed to jus
 \caption{Monte Carlo simulation of European up-and-out call option for various $\dt$. M is the number of simulations. Exact solution is the solid line.}\label{q6b}
 \end{figure}
 
-As can be seen in Figure (\ref{q6b}) the Monte Carlo simulation is converging for large $M$ for all $\dt$. However, the solutions are converging to wrong value. This is because this Monte Carlo method is not effective for properly evaluating barrier options. Herein error means variation in the computed solution and the discussion of errors in Monte Carlo are still valuable as we can look at variation in the computed solution. For small values of $M$ the error is dominated by the Monte Carlo error, which behaves as $O(1/\sqrt{M})$, recalling that the error is $\max(\dt,1/\sqrt{M})$. However as $M$ increases the error becomes $O(\dt)$, which is independent of $M$, and hence the solution is becoming constant. To illustrate this, consider $\dt=0.02$. The error is dominated by $O(\sqrt{M})$ for $M=1000,2000$, however for all $M\ge5000, 1/\sqrt{M}<\dt$ so the error becomes approximately constant. Comparing $M=10^{4}, 10^{6}$ we see that the computed solution barely changes.
-
-Question 7 will elaborate further as to why this Monte Carlo method is ineffective at producing the right answer.  
+As can be seen in Figure (\ref{q6b}) the Monte Carlo simulation is converging for large $M$ for all $\dt$. However, the solutions are converging to wrong value. This is because this Monte Carlo method is not effective for properly evaluating barrier options. Herein error means variation in the computed solution and the discussion of errors in Monte Carlo are still valuable as we can look at variation in the computed solution. For small values of $M$ the error is dominated by the Monte Carlo error, which behaves as $O(1/\sqrt{M})$. However as $M$ increases the error becomes independent of $M$. As explained above, the fact that the error now depends on $\dt$ is not surprising. Question 7 will elaborate further as to why this Monte Carlo method is ineffective at producing the right answer.  
 \end{enumerate}
-\item \textbf{Solution}: Code for this question is implemented in \texttt{mod\_mcbarrier.m}, \texttt{q7.m}, and \texttt{q7\_analysis.m}. Also note that I have varied the timestep as opposed to the volatility. This does not affect the conclusions.
 
-As discussed \cite{Moon} the reason the above Monte Carlo method fails for barrier simulations is due to the time hitting error, which behaves as $O(1/\sqrt{N})$. This error arises because during a time interval $\dt$ it is possible that the price might have jumped above the barrier. This is probable if the asset is close, but below, the barrier. Thus the modification proposed by \cite{Moon} is to include a probability that the price would make a jump over the barrier inbetween timesteps. In problem 6 we are neglecting this and this causes error.
 
-To see this, in our case we have $N=1/\dt$ so returning to Figure (\ref{q6b}) we see that if $\dt=0.0004$ the error in the hitting time is $O(\sqrt{\dt})=0.02$ which is significantly larger than $O(\dt)=0.0004$. Indeed going back to the data we see that for $M=10^{6}$ the error in the computed solution with the exact solution is $0.0276$ exactly as expected. Thus we see that in reality the error above is domintated by $\max(1/\sqrt{M},\dt,\sqrt{\dt})$ which for large $M$ and small $\dt$ is dominated by $\sqrt{\dt}$. 
+
+\item \textbf{Solution}: Code for this question is implemented in \texttt{mod\_mcbarrier.m}, \texttt{q7.m}, and \texttt{q7\_analysis.m}. Also note that I have varied the time step as opposed to the volatility. This does not affect the conclusions.
+
+As discussed \cite{Moon} the reason the above Monte Carlo method fails for barrier simulations is due to the time hitting error, which behaves as $O(1/\sqrt{N})$. This error arises because during a time interval $\dt$ it is possible that the price might have jumped above the barrier. This is probable if the asset is close, but below, the barrier. Thus the modification proposed by \cite{Moon} is to include a probability that the price would make a jump over the barrier in between time steps. In problem 6 we are neglecting this and this causes error.
+
+To see this, in our case we have $N=1/\dt$ so returning to Figure (\ref{q6b}) we see that if $\dt=0.0004$ the error in the hitting time is $O(\sqrt{\dt})=0.02$ which is significantly larger than $O(\dt)=0.0004$. Indeed going back to the data we see that for $M=10^{6}$ the error in the computed solution with the exact solution is $0.0276$ exactly as expected. Thus we see that in reality the error above is dominated by $\max(1/\sqrt{M},\dt,\sqrt{\dt})$ which for large $M$ and small $\dt$ is dominated by $\sqrt{\dt}$. 
 
 \begin{figure}
 \begin{center}
@@ -280,13 +281,13 @@ To see this, in our case we have $N=1/\dt$ so returning to Figure (\ref{q6b}) we
   0.0004  &  0.0687 & 0.0001\\
 \hline
 \end{tabular}
-\caption{Comparison of errors in final values for the two different Monte Carlo simulations with different timesteps. Here $M=10^{6}$.}
+\caption{Comparison of errors in final values for the two different Monte Carlo simulations with different time steps. Here $M=10^{6}$.}
 \end{table}
 \begin{figure}
 \begin{center}
 \includegraphics[scale=0.8]{q7b.png}
 \end{center}
-\caption{Error of modified Monte Carlo simulation of European up-and-out call option for various $\dt$. N is the number of timesteps.}\label{q7b}
+\caption{Error of modified Monte Carlo simulation of European up-and-out call option for various $\dt$. N is the number of time steps.}\label{q7b}
 \end{figure}
 
 Figure (\ref{q7a}) demonstrates the modified Monte Carlo simulation while Table 2 contains the absolute errors between the two methods. As we can see, the convergence is significantly better. Figure (\ref{q7b}) demonstrates the error in the approximation for $M=10^{6}$. As we can see, the old Monte Carlo method has an error as $O(\sqrt{\dt})$ (slope of $1/2$ on loglog graph) while the modified Monte Carlo method does much better and has an error of $O(\dt)$ (slope of $1$ on loglog graph).
@@ -294,7 +295,7 @@ Figure (\ref{q7a}) demonstrates the modified Monte Carlo simulation while Table 
 \begin{center}
 \includegraphics[scale=0.8]{q7c.png}
 \end{center}
-\caption{CPU time used by the two Monte Carlo methods. $N$ is the number of timesteps.}\label{q7c}
+\caption{CPU time used by the two Monte Carlo methods. $N$ is the number of time steps.}\label{q7c}
 \end{figure}
 
 Figure (\ref{q7c}) shows the CPU times. In my implementation I am using MATLAB's parallel computing functions (\texttt{parfor}) since the Monte Carlo simulations are all independent. Additionally the time difference between the two simulations is significantly less with the old MC being roughly three times faster. 

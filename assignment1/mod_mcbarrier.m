@@ -1,5 +1,6 @@
 function Vout=mod_mcbarrier(S0,Su,K,T,dt,r,sigma,M)
 % Computes Monte-Carlo simulation for up-and-out barrier call options
+% According to Moon Commun. Korean. Math. Soc. 23 (2008) No. 2 pg 285o
 % S0 ~ initial price; Su ~ upper barrier; K ~ strike price; T ~ final time
 % dt ~ time-step; r ~ interest rate; sigma ~ volatility
 % M ~ number of simulations

@@ -20,7 +20,6 @@ d8=d7-sigma*sqrt(T-t);
 Vout=S.*(normcdf(d1)-normcdf(d3)-(Su./S).^(1+2*r/sigma^2).*(normcdf(d6)-normcdf(d8))) - ...
     K*exp(-r*(T-t))*(normcdf(d2)-normcdf(d4)-(Su./S).^(-1+2*r/sigma^2).*(normcdf(d5)-normcdf(d7)));
 
-
 plot(S,Vout,'*-')
 title('European up-and-out barrier call option')
 xlabel('Initial Price')

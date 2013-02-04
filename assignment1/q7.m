@@ -1,4 +1,5 @@
-%%Question 6b
+%%Question 7
+%Monte Carlo simulation of up and out barrier option modified by Moon
 close all;clear all;
 %initial data
 S0=100;K=95;Su=110;r=0.01;sigma=0.2;T=1;

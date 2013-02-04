@@ -1,4 +1,5 @@
 %%Question 6b analysis
+%graph plots
 clear all;close all;
 V=dlmread('q6b_data.dat');
 %from part 6a
