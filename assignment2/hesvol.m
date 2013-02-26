@@ -6,6 +6,7 @@ Q=[1,rho;rho,1]; L=chol(Q);
 
 x=zeros(2,num_steps+1);
 Payoff=0;
+%number of Monte Carlo simulations
 for m=1:M
 	%generate correlated random variables
 	phi=L'*randn(2,100);
