@@ -13,12 +13,31 @@
 \newcommand{\dt}{\Delta t}
 \pagestyle{fancy}
 \fancyhead[L]{Luke Bovard - 20288133}
-\fancyhead[c]{CS 676}
+\fancyhead[c]{CS 676 - Assignment 2}
 \fancyhead[R]{\today}
 \usepackage{babel}
 \begin{document}
 \begin{enumerate}
-\item
+%%%%%%%%%%%%%%%%%%%%
+%QUESTION 1
+%%%%%%%%%%%%%%%%%%%%
+\item 
+\begin{enumerate}
+\item See the file \texttt{binomialDelta.m} attached.
+
+\item See the file \texttt{interpDelta.m} attached. It is important to note that here I do not use the built-in MATLAB function \texttt{interp1} as profiling the code for this question showed that this function was taking up all of the CPU time. I think this is  because \texttt{interp1} computes the linear approximations for all points and then at the end choses the one you want. Instead I just implemented the linear interpolation myself and the code sped up significantly. The MATLAB code profiler showed that what previously took 5 minutes now only took 40 seconds.  The code is also fairly fast as it exploits vectorisation on logical operations.
+
+\item Figure \ref{q1} shows the exact vs approximate solution of delta hedging as $t_{N-1}$. As we can see the approximate solution is pretty good. Let us first comment on the shape. This is exactly the shape one would expect. Consider the option value at expiry. It is simply $V=\max(S-K,0)$. Recall that $\alpha = \partial V/\partial S$ so in this case we would obtain the function $\alpha = 0$ if $ S<K$ and $\alpha=1$ if $ S>K$. This is nothing but the Heaviside step function. Now at a time-step before this time we except the $\alpha$ curve to very close to a step function, which as we can see, it is.
+
+Now when we consider the exact solution we have a very smooth curve while for the approximate we have a more rigid curve. This is because finite difference approximations do not deal well with discontinuities. The exact solution has an analytical form which is smooth at $t_{N-1}$ and hence the derivative is also smooth. Even though this function is smooth, it is still approaching a vertical line which would be a discontinuity. The analytical solution doesn't care about this but the finite difference approximate solution does and hence will have a difficult time approximating a discontinuity. To resolve this one should probably use a finite volume techniques which are developed to better handle discontinuities.
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{q1.png}
+\caption{Delta hedge position $\alpha$ as a function of strike price $S$ at $t_{N-1}$.}
+\label{q1}
+\end{center}
+\end{figure}
+\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%
 %QUESTION 2
@@ -70,17 +89,111 @@ so if the asset has $S<K$ then the portfolio is simply worth $\Pi=V(0)e^{rT}$ a 
 \end{align*}
 so the P\&L is exactly 1 which, looking at Figure \ref{nohedge} we see that is exactly where the spike is located. The reason the probability is large is because this is the value of the portfolio for all $S<K$ which covers a wide range of values. Now as $S>K$ the value of the porfolio becomes more negative (i.e. has a greater profit) we see that the potential profit decreases. It turns out in this simulation there was an observed profit of $-18$ but the probability is incredibly tiny.
 
-Figures \ref{monthly}-\ref{daily} show an almost normal distribution of the profit and loss. Looking at Figure \ref{monthly} we see that the probability distribution is very broad with values ranging from $-0.9$ to $0.5$. When we switch to hedging weekly we see that the distribution is becoming less broad and thes values only range from about $-0.3$ to $0.3$. When we hedge daily see that the distribution is becoming narrower and the profit and loses range from $-0.15$ to $0.1$. Additionally the probability of having $0$ profit increases. This makes sense. In an ideal world, we can hedge continuously and we can always have a risk-free portfolio, but we cannot do this in the real world so we must hedge at discrete times. As we delta hedge more frequently we are better able to hedge away the risk and the probability of a risk-free portfolio increases to $1$. This explains why when we delta hedge more frequently the width of the distribution becomes narrower and narrower. If we delta hedged more frequently then we would see an even narrower peak, but in reality delta hedging is not something that can be done for free as there are transaction costs to consider. Thus a more accurate hedging model would include these transaction costs.
+Figures \ref{monthly}-\ref{daily} show an almost normal distribution of the profit and loss. Looking at Figure \ref{monthly} we see that the probability distribution is very broad with values ranging from $-0.9$ to $0.5$. When we switch to rebalancing weekly we see that the distribution is becoming less broad and thes values only range from about $-0.3$ to $0.3$. When we rebalance daily see that the distribution is becoming narrower and the profit and loses range from $-0.15$ to $0.1$. Additionally the probability of having $0$ profit increases. This makes sense. In an ideal world, we can rebalance continuously and we can always have a risk-free portfolio. But we cannot do this in the real world so we must rebalance at discrete times. As we delta hedge more frequently we are better able to hedge away the risk and the probability of a risk-free portfolio increases to $1$. This explains why when we delta hedge more frequently the width of the distribution becomes narrower and narrower. If we delta hedged more frequently then we would see an even narrower peak, but in reality delta hedging is not something that can be done for free as there are transaction costs to consider. Thus a more accurate hedging model would include these transaction costs.
 %%part b
-\item
+\item This is implemented in \texttt{dVaRCVaR.m} and is attached. There is little to say here as it is a direct translation of the formulas provided.
 
 %%part c
-\item
+\item Code for this is also implemented in \texttt{q2.m}. Table 1 contains the data for the 4 rebalancing options. As can be seen, this table gives a more quantitative assessment of the figures. Looking at the mean and standard deviation, we can easily see that the more frequent we delta hedge the probability curve gets narrower and narrower with the mean very close to zero (a riskless portfolio) and small standard deviations. If we do not delta hedge, we see that the standard deviation and mean of that case do not give a clear picture of what is going on unlike the other cases which are approximately normal and can be described accurately with the mean and std. Instead this is where the VaR and CVaR quantities are useful in telling us a bit about the distribution. The VaR and CVaR  \textbf{FINISH THIS}
+\begin{table}[t]
+
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\multicolumn{5}{c}{Call Option}\\
+\hline
+	$N$ & Mean & Std & VaR(95\%) & CVaR(95\%)  \\
+\hline
+	None & 0.5838 & 1.718 & 3.969 & 5.376 \\
+	12	&	-0.001195 & 0.1374 & 0.2222 & 0.3113 \\
+	52	&	 0.001377 & 0.0665 & 0.1088 & 0.1532 \\
+	250	&		0.00000812 & 0.0297 & 0.0482 & 0.0685\\
+\hline
+\end{tabular}
+\caption{The mean, std, VaR, CVaR for four types of rebalancing of delta hedging. For VaR and CVaR the percentage is $\beta=95\%$.}
+\end{table}
 \end{enumerate}
 
+%%%%%%%%%%%%%%%%%%%%
+%QUESTION 3
+%%%%%%%%%%%%%%%%%%%%
+\item Assume that the volatility follows a CIR process 
+\begin{align*}
+dv = -\lambda (v-\bar{v})dt + \eta \sqrt{v}dZ^{(2)},
+\end{align*}
+and the Milstein scheme is given as
+\begin{align*}
+v_{n+1} = v_{n} + a\Delta t + b \Delta W^{(2)} + \frac{1}{2}bb'((\Delta W^{(2)})^{2}-\Delta t).
+\end{align*}
+Here $a=-\lambda(v-\bar{v}),b=\eta \sqrt{v},$ and $b'=\eta/2\sqrt{v}$. This implies that $bb'/2 = \eta^{2}/4$. Plugging these in yields
+\begin{align*}
+v_{n+1} &= v_{n}-\lambda(v_{n}-\bar{v})\Delta t + \frac{\eta^{2}}{4}((\Delta W^{(2)})^{2}-\Delta t) + \eta \sqrt{v_{n}}\Delta W^{(2)}\\
+&= -\lambda(v_{n}-\bar{v})\Delta t - \frac{\eta^{2}}{4}\Delta t + v_{n} + \sqrt{v_{n}}\eta \Delta W^{(2)}+ \frac{\eta^{2}}{4}(\Delta W^{(2)})^{2}.
+\end{align*}
+We now observe that $v_{n}+\eta\sqrt{v_{n}}\Delta W^{(2)} + \eta^{2}/4 (\Delta W^{(2)})^{2} = (\sqrt{v_{n}}+\eta/2 \Delta W^{(2)})^{2}$. Thus we immediately have
+\begin{align*}
+v_{n+1} = \left(\sqrt{v_{i}}+\frac{\eta}{2}\sqrt{\Delta t}\phi_{i}^{(2)}\right)^{2} - \lambda(v_{i}-\bar{v})\Delta t - \frac{\eta^{2}}{4}\Delta t,
+\end{align*}
+where we recall that $\Delta W^{(2)} = \sqrt{\Delta t}\phi^{(2)}_{i}$.
+
+Now assume that $v_{i}=0$. We have that the squared term is always positive so to ensure that $v_{i+1}>0$ we must have that
+\begin{align*}
+\lambda\bar{v}\Delta t -\frac{\eta^{2}}{4}\Delta t > 0 \Rightarrow \lambda \bar{v}-\frac{\eta^{2}}{4} > 0\Rightarrow \frac{4\lambda\bar{v}}{\eta^{2}}>1
+\end{align*}
+as required.
+%%%%%%%%%%%%%%%%%%%%
+%QUESTION 4
+%%%%%%%%%%%%%%%%%%%%
 \item
+\begin{enumerate}
+\item The code is implemented in \texttt{hesvol.m} and \texttt{q4b.m} and is attached. We find that the initial option value is $V_{0}=4.322519$. As will be discussed in question 6 this answer is about $0.3\%$ off the exact.
+
+\item Figures \ref{hesstrike} shows the implied volatility as a function of strike price under Heston's model. A problem with the Black-Scholes model is that when real data is input and the implied volatility is plotted we see a smile, despite the assumption that $\sigma$ is constant. In Heston's model we see that the implied volatility is in fact a smile, so this model provides a theoretical model for stock evolution that has volatility smile built into it. Thus when it comes to real-world modelling Heston's model might provide a better option price than the Black-Scholes.
+
+If we look at Figure \ref{hesexpiry} we see that the implied volatility is roughly constant regardless of the expiry time. \textbf{ELABORATE FURTHER}
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{q4b_strike.png}
+\caption{The implied volatility as a function of strike price under Heston's stochastico volatility model. The volatility smile can be seen.}
+\label{hesstrike}
+\end{center}
+\end{figure}
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{q4b_expiry.png}
+\caption{The implied volatility as a function of expiry price under Heston's stochastic volatility model.}
+\label{hesexpiry}
+\end{center}
+\end{figure}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%
+%QUESTION 5
+%%%%%%%%%%%%%%%%%%%%
 \item
-\item
+\begin{enumerate}
+\item Let $X_{t}=(1+Z_{t})e^{t^{2}/2}$. Let $Z_{t}$ be a standard Browian motion so if we set $X_{t}=Z_{t}$ then $dX_{t} = dZ_{t}$ is an Ito process with $a=0$ and $b=1$. Now consider $g(x,t)=(1+x)e^{t^{2}/2}$. We have that
+\begin{align*}
+\frac{\partial g}{\partial t} = tg \qquad \frac{\partial g}{\partial x}= e^{t^{2}/2} \qquad \frac{\partial^{2}g}{\partial x^{2}} = 0
+\end{align*}
+Set $Y_{t}=g(X_{t},t)$ so by Ito's lemma we have that
+\begin{align*}
+dY_{t} &= \left(\frac{\partial g}{\partial t} + a\frac{\partial g}{\partial x} + \frac{1}{2}b^{2}\frac{\partial^{2}g}{\partial x^{2}}\right)dt+b\frac{\partial g}{\partial x}dZ_{t}\\
+&= tg dt + e^{t^{2}/2}dZ_{t}\\
+&= tY_{t} dt + e^{t^{2}/2}dZ_{t}
+\end{align*}
+as required.
+
+\item Let $X_{t}=Z_{t}^{3}-3tZ_{t}$. As before $Z_{t}$ is a standard Browian motion so if we set $X_{t}=Z_{t}$ then $dX_{t}=dZ_{t}$ is an Ito process with $a=0$ and $b=1$. Now consider $g(x,t)=x^{3}-3tx$. 
+\begin{align*}
+\frac{\partial g}{\partial t} = -3x \qquad \frac{\partial g}{\partial x}= 3x^{2}-3t \qquad \frac{\partial^{2}g}{\partial x^{2}}= 6x
+\end{align*}
+Set $Y_{t}=g(X_{t},t)$ so by Ito's lemma we have that
+\begin{align*}
+dY_{t} &= \left(\frac{\partial g}{\partial t} + a\frac{\partial g}{\partial x} + \frac{1}{2}b^{2}\frac{\partial^{2}g}{\partial x^{2}}\right)dt+b\frac{\partial g}{\partial x}dZ_{t}\\
+&= (-3X_{t}+3X_{t})dt + (3X_{t}^{2}-3t)dZ_{t}\\
+&= (3Z_{t}^{2}-3t)dZ_{t}
+\end{align*}
+since $X_{t}=Z_{t}$. This gives the required result.
+\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%
 %QUESTION 6
