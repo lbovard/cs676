@@ -1,0 +1,98 @@
+\documentclass[10pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[letterpaper]{geometry}
+\geometry{verbose,bmargin=3cm,lmargin=2.5cm,rmargin=3cm}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\theoremstyle{plain}
+\newcommand{\dt}{\Delta t}
+\pagestyle{fancy}
+\fancyhead[L]{Luke Bovard - 20288133}
+\fancyhead[c]{CS 676}
+\fancyhead[R]{\today}
+\usepackage{babel}
+\begin{document}
+\begin{enumerate}
+\item
+
+%%%%%%%%%%%%%%%%%%%%
+%QUESTION 2
+%%%%%%%%%%%%%%%%%%%%
+\item
+\begin{enumerate}
+%%part a
+\item The code is implemented in \texttt{q2.m}. Some comments are necessary on the code. There are two places where vectorisation was unsuccessful. The first is calling the \texttt{interpDelta} function which could not be vectorised because MATLAB complained that the input arrays are of different sizes. This is not a problem because the function, as discussed in Question 1, has been vectorised internally so it is very fast. Secondly doing the rebalancing of the bank could be vectorised since it is a recursive relationship, however it is an inhomogeneous relationship which, while having an exact solution (which is provided by commented out) is inefficient to compute. It is far faster to use a simple loop to calculate the recursion. The code has been profiled and the effects of the bank updating are minimal so using the exact solution might cause a miniscule speed up that would be unnoticable.  
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{q2no_hedge.png}
+\caption{Probability density of Profit and Loss with no delta hedging.}
+\label{nohedge}
+\end{center}
+\end{figure}
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{q2n_12.png}
+\caption{Probability density of Profit and Loss delta hedging monthly.}
+\label{monthly}
+\end{center}
+\end{figure}
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{q2n_52.png}
+\caption{Probability density of Profit and Loss delta hedging weekly.} 
+\label{weekly}
+\end{center}
+\end{figure}
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{q2n_250.png}
+\caption{Probability density of Profit and Loss delta hedging daily.}
+\label{daily}
+\end{center}
+\end{figure}
+
+Figures \ref{nohedge}-\ref{daily} show the probability densities of various hedging frequenicies. Note that each figure has different axes and that here a negative value of profit and loss refers to a profit while a positive value refers to a loss. Figure \ref{nohedge} has no-hedging and we can see that with no hedging there is an almost $25\%$ chance of losing money on this portfolio. This makes sense because when we do no hedging the value of the portfolio at expiry is simply
+\begin{align*}
+\Pi(T) = -V(S(T),T)+ B(t_{N-1})e^{r\Delta t}
+\end{align*}
+but since the recursive formula for the bank is simply $B(t_{i})=e^{r\Delta t}B(t_{i-1}), B(0)=V(0)$ this formula becomes
+\begin{align*}
+\Pi(T) = -V(S(T),T)+ B(0)e^{rT} = -\max(S-K,0)+V(0)e^{rT}
+\end{align*}
+so if the asset has $S<K$ then the portfolio is simply worth $\Pi=V(0)e^{rT}$ a constant. In fact the profit and loss formula now becomes
+\begin{align*}
+\text{P\&L}= \frac{e^{-rT}\Pi(T)}{V(0)}= \frac{V(0)e^{rT}e^{-rT}}{V(0)} = 1
+\end{align*}
+so the P\&L is exactly 1 which, looking at Figure \ref{nohedge} we see that is exactly where the spike is located. The reason the probability is large is because this is the value of the portfolio for all $S<K$ which covers a wide range of values. Now as $S>K$ the value of the porfolio becomes more negative (i.e. has a greater profit) we see that the potential profit decreases. It turns out in this simulation there was an observed profit of $-18$ but the probability is incredibly tiny.
+
+Figures \ref{monthly}-\ref{daily} show an almost normal distribution of the profit and loss. Looking at Figure \ref{monthly} we see that the probability distribution is very broad with values ranging from $-0.9$ to $0.5$. When we switch to hedging weekly we see that the distribution is becoming less broad and thes values only range from about $-0.3$ to $0.3$. When we hedge daily see that the distribution is becoming narrower and the profit and loses range from $-0.15$ to $0.1$. Additionally the probability of having $0$ profit increases. This makes sense. In an ideal world, we can hedge continuously and we can always have a risk-free portfolio, but we cannot do this in the real world so we must hedge at discrete times. As we delta hedge more frequently we are better able to hedge away the risk and the probability of a risk-free portfolio increases to $1$. This explains why when we delta hedge more frequently the width of the distribution becomes narrower and narrower. If we delta hedged more frequently then we would see an even narrower peak, but in reality delta hedging is not something that can be done for free as there are transaction costs to consider. Thus a more accurate hedging model would include these transaction costs.
+%%part b
+\item
+
+%%part c
+\item
+\end{enumerate}
+
+\item
+\item
+\item
+
+%%%%%%%%%%%%%%%%%%%%
+%QUESTION 6
+%%%%%%%%%%%%%%%%%%%%
+\item The implementation of the exact solution from \cite{heston} is provided in \texttt{q6.m} and \texttt{charfunc.m} which are attached. As discussed in the code, but repeated here, the integral ranges from $0,\infty$ however the function \texttt{charfunc} is unable to handle really large values of $\phi$ so the integral is truncated at $5000$. Since the characteristic function decays very quickly (both due to the presence of $e^{-i\phi}$ and $1/\phi$ type terms) the error in this is very tiny and testing has shown that the difference between an upper bound of $1000$ and $5000$ is smaller than $10^{-15}$. The lower bound is replaced by $10^{-10}$ instead of $0$ since this implementation is naive and does not fix the divison by zero at $\phi=0$. However, as can easily be seen $\lim_{\phi\rightarrow 0}$ exists so the integral is well-defined. 
+
+Using the data from question 4, the exact solution gives $V_{0}=4.322519$ while the Heston model from question 4 gives $V_{0}=4.337212$ which gives a relative error of $0.33\%$ which is quite good. It is clear that when an exact formula exists, it is a good idea to use it since the running time of the exact solution is under $0.01$ seconds.
+\end{enumerate}
+\begin{thebibliography}{1}
+\bibitem{heston} S. ~Heston,\textit{A closed-form solution for options with stochastic volatility with applications to bond and currency options}, Review of Financial Studies 6, 327-343 (1993)
+\end{thebibliography}
+
+\end{document} 
+
+

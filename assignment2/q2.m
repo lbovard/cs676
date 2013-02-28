@@ -19,13 +19,13 @@ parfor k=1:M
     alphat=zeros(1,N);bank=alphat;A=exp(r*dt);
     %get first hedge position
     alphat(1)=L(1).alpha;
-
+    
     %get hedging positions
-    %couldn't vectorise this as interp1 complains about the arrays being
+    %couldn't vectorise this as MATLAB complains about the arrays being
     %different sizes. Could be fixed with cleverness?
     %alphat contains hedging times at t_{0},t_{1},t_{2},...,t_{N-1}
     for i=2:N
-        alphat(i)=interpDelta(L(i).alpha,L(i).S,S(i));
+      alphat(i)=interpDelta(L(i).alpha,L(i).S,S(i));  
     end
     %initial bank
     bank(1)=V0-alphat(1)*S(1);
@@ -43,7 +43,20 @@ parfor k=1:M
     %S(end) = stock price at t_{N}
     %alpha/bank(end) = hedging/bank at t_{N-1}
     port=-payoff(S(end))+alphat(end)*S(end)+bank(end)*A;
-
     PL(k)=exp(-r*T)*port/V0;
-    
 end
+x=linspace(min(PL),max(PL),50);
+n=histc(PL,x)/M;
+bar(x,n);
+axis([min(PL) max(PL) 0 max(n)+0.01])
+xlabel('P&L')
+ylabel('probability')
+title('N=12')
+%now do VaR and CVaR stuff
+beta=0.95;
+L=-PL;
+[var,cvar]=dVaRCVaR(L,beta);
+hmean=mean(L);
+hsigma=std(L);
+sim_info='N=%d has VaR=%f2.5, CVaR=%f2.5, mean=%f2.5,std=%f2.5\n';
+fprintf(sim_info,N,var,cvar,hmean,hsigma)
