@@ -94,7 +94,9 @@ Figures \ref{monthly}-\ref{daily} show an almost normal distribution of the prof
 \item This is implemented in \texttt{dVaRCVaR.m} and is attached. There is little to say here as it is a direct translation of the formulas provided.
 
 %%part c
-\item Code for this is also implemented in \texttt{q2.m}. Table 1 contains the data for the 4 rebalancing options. As can be seen, this table gives a more quantitative assessment of the figures. Looking at the mean and standard deviation, we can easily see that the more frequent we delta hedge the probability curve gets narrower and narrower with the mean very close to zero (a riskless portfolio) and small standard deviations. If we do not delta hedge, we see that the standard deviation and mean of that case do not give a clear picture of what is going on unlike the other cases which are approximately normal and can be described accurately with the mean and std. Instead this is where the VaR and CVaR quantities are useful in telling us a bit about the distribution. The VaR and CVaR  \textbf{FINISH THIS}
+\item Code for this is also implemented in \texttt{q2.m}. Table 1 contains the data for the 4 rebalancing options. As can be seen, this table gives a more quantitative assessment of the figures. Looking at the mean and standard deviation, we can easily see that the more frequent we delta hedge the probability curve gets narrower and narrower with the mean very close to zero (a riskless portfolio) and small standard deviations. If we do not delta hedge, we see that the standard deviation and mean of that case do not give a clear picture of what is going on unlike the other cases which are approximately normal and can be described accurately with the mean and std. Instead this is where the VaR and CVaR quantities are useful in telling us a bit about the distribution. The VaR and CVaR give a slightly more meaningful assessment of the risk. Let us consider the representative case of rebalancing monthly. The standard deviation is $\sigma=0.1374$ while the VaR and CVaR give $0.2222,0.3113$ respectively. Looking at Figure \ref{monthly} we see that outside of one standard deviation, there is still a significant tail and the VaR and CVaR capture more of that tail.
+
+The situation is even worse with no hedging as the distribution is far from normal so the standard deviation cannot be interpretted as nicely as with the normal while the VaR and CVaR give us a more reasonable assessment of the portfolio. It is worth pointing out that this portfolio could never exceed a loss of 1 while the VaR and CVaR suggest it could. Given that these numbers are roughly 2 and 3 times bigger, they suggest a significantly larger risk in this porfolio. Indeed the probability density distribution suggests that a loss of 1 is significantly more likely than other possibilities (by almost double).
 \begin{table}[t]
 
 \centering
@@ -149,11 +151,11 @@ as required.
 
 \item Figures \ref{hesstrike} shows the implied volatility as a function of strike price under Heston's model. A problem with the Black-Scholes model is that when real data is input and the implied volatility is plotted we see a smile, despite the assumption that $\sigma$ is constant. In Heston's model we see that the implied volatility is in fact a smile, so this model provides a theoretical model for stock evolution that has volatility smile built into it. Thus when it comes to real-world modelling Heston's model might provide a better option price than the Black-Scholes.
 
-If we look at Figure \ref{hesexpiry} we see that the implied volatility is roughly constant regardless of the expiry time. \textbf{ELABORATE FURTHER}
+If we look at Figure \ref{hesexpiry} we see that the implied volatility is roughly constant regardless of the expiry time.  This result states that with the same strike and initial price but with different expiry times the implied volatility from the initial option price is the same. The Black-Scholes equation would give a straight line because the volatility is constant in that model. Thus we see that Heston's model is able to predict a volatility smile and retain some of the features of the Black-Scholes model, such as constant implied volatility from initial option prices independent of the expiry time.
 \begin{figure}
 \begin{center}
 \includegraphics[scale=0.7]{q4b_strike.png}
-\caption{The implied volatility as a function of strike price under Heston's stochastico volatility model. The volatility smile can be seen.}
+\caption{The implied volatility as a function of strike price under Heston's stochastic volatility model. The volatility smile can be seen.}
 \label{hesstrike}
 \end{center}
 \end{figure}
